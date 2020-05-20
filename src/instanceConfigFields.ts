@@ -1,7 +1,7 @@
 import { IntegrationInstanceConfigFieldMap } from '@jupiterone/integration-sdk';
 
 const instanceConfigFields: IntegrationInstanceConfigFieldMap = {
-  getLastReport: {
+  getLatestScanFindings: {
     type: 'boolean',
   },
   apiKey: {

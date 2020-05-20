@@ -8,17 +8,18 @@ import { createServicesClient } from '../../collector';
 import { convertFinding } from '../../converter';
 
 const MS_IN_A_DAY = 86400000;
+const DAYS_TO_GET = 30;
 
 const step: IntegrationStep = {
   id: 'fetch-findings',
-  name: 'Fetch Detectify findings from past 30 days',
+  name: `Fetch Detectify findings from past ${DAYS_TO_GET} days`,
   types: ['detectify_finding'],
   async executionHandler({
     instance,
     jobState,
   }: IntegrationStepExecutionContext) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((instance.config as any).getLastReport) {
+    if ((instance.config as any).getLatestScanFindings) {
       return;
     }
 
@@ -26,7 +27,8 @@ const step: IntegrationStep = {
     const domains = await client.getRootDomains();
 
     const now = new Date().getTime();
-    const from = (new Date(now - MS_IN_A_DAY * 30).getTime() / 1000) | 0;
+    const from =
+      (new Date(now - MS_IN_A_DAY * DAYS_TO_GET).getTime() / 1000) | 0;
 
     for (const domain of domains) {
       if (domain.token) {

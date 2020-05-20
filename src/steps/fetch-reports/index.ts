@@ -16,7 +16,7 @@ const step: IntegrationStep = {
     jobState,
   }: IntegrationStepExecutionContext) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (!(instance.config as any).getLastReport) {
+    if (!(instance.config as any).getLatestScanFindings) {
       return;
     }
 
