@@ -5,7 +5,7 @@ export function createStepContext(): ReturnType<
 > {
   return createMockStepExecutionContext({
     instanceConfig: {
-      hostname: process.env.HOSTNAME || 'develop.snipeitapp.com',
+      hostname: process.env.HOSTNAME || 'develop.detectify.com',
       apiToken: process.env.API_TOKEN || 'test',
     },
   });
