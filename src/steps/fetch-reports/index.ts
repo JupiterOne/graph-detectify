@@ -16,7 +16,7 @@ import {
 const step: IntegrationStep = {
   id: 'fetch-reports',
   name: 'Fetch Detectify findings from the latest scan reports',
-  types: ['detectify_finding', 'detectify_scan'],
+  types: ['detectify_finding', 'detectify_scan_profile', 'detectify_scan'],
   async executionHandler({
     instance,
     jobState,
