@@ -5,12 +5,18 @@ import {
 } from '@jupiterone/integration-sdk';
 
 import { createServicesClient } from '../../collector';
-import { convertFinding, convertProfile, convertReport } from '../../converter';
+import {
+  convertFinding,
+  convertProfile,
+  convertReport,
+  getAccountEntity,
+  getServiceEntity,
+} from '../../converter';
 
 const step: IntegrationStep = {
   id: 'fetch-reports',
   name: 'Fetch Detectify findings from the latest scan reports',
-  types: ['detectify_finding'],
+  types: ['detectify_finding', 'detectify_scan_profile', 'detectify_scan'],
   async executionHandler({
     instance,
     jobState,
@@ -19,6 +25,9 @@ const step: IntegrationStep = {
     if (!(instance.config as any).getLatestScanFindings) {
       return;
     }
+
+    const accountEntity = getAccountEntity(instance);
+    const serviceEntity = getServiceEntity(instance);
 
     const client = createServicesClient(instance);
     const domains = await client.getRootDomains();
@@ -36,6 +45,20 @@ const step: IntegrationStep = {
             );
             const reportEntity = convertReport(report);
             await jobState.addEntity(reportEntity);
+
+            const accountReportRelationship = createIntegrationRelationship({
+              from: accountEntity,
+              to: reportEntity,
+              _class: 'HAS',
+            });
+            await jobState.addRelationship(accountReportRelationship);
+
+            const serviceReportRelationship = createIntegrationRelationship({
+              from: serviceEntity,
+              to: reportEntity,
+              _class: 'PERFORMED',
+            });
+            await jobState.addRelationship(serviceReportRelationship);
 
             const findingEntities = report.findings
               ? report.findings.map(convertFinding)

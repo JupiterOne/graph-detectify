@@ -102,8 +102,8 @@ export const convertReport = (
     entityData: {
       source: data,
       assign: {
-        _key: `detectify-report:${data.token}`,
-        _type: 'detectify_report',
+        _key: `detectify-scan:${data.token}`,
+        _type: 'detectify_scan',
         _class: ['Assessment'],
         name: data.scan_profile_name,
         displayName: data.scan_profile_name,
