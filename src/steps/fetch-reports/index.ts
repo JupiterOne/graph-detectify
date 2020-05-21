@@ -5,7 +5,7 @@ import {
 } from '@jupiterone/integration-sdk';
 
 import { createServicesClient } from '../../collector';
-import { convertFinding, convertProfile } from '../../converter';
+import { convertFinding, convertProfile, convertReport } from '../../converter';
 
 const step: IntegrationStep = {
   id: 'fetch-reports',
@@ -34,24 +34,35 @@ const step: IntegrationStep = {
             const report = await client.getLatestFullReport(
               profileEntity.token,
             );
+            const reportEntity = convertReport(report);
+            await jobState.addEntity(reportEntity);
+
             const findingEntities = report.findings
               ? report.findings.map(convertFinding)
               : [];
             await jobState.addEntities(findingEntities);
 
-            const relationships = [];
-            relationships.push(
-              createIntegrationRelationship({
-                fromType: 'web_app',
-                fromKey: `web-app:${domain.name}`,
-                toType: profileEntity._type,
-                toKey: profileEntity._key,
-                _class: 'HAS',
-              }),
-            );
+            const scanProfileRelationship = createIntegrationRelationship({
+              fromType: 'web_app',
+              fromKey: `web-app:${domain.name}`,
+              toType: profileEntity._type,
+              toKey: profileEntity._key,
+              _class: 'HAS',
+            });
+            await jobState.addRelationship(scanProfileRelationship);
+
+            const findingRelationships = [];
             findingEntities.forEach((findingEntity) => {
+              findingRelationships.push(
+                createIntegrationRelationship({
+                  from: reportEntity,
+                  to: findingEntity,
+                  _class: 'IDENTIFIED',
+                }),
+              );
+
               if (findingEntity.endpoint) {
-                relationships.push(
+                findingRelationships.push(
                   createIntegrationRelationship({
                     fromType: 'web_app_endpoint',
                     fromKey: `web-app-endpoint:${findingEntity.endpoint}`,
@@ -62,7 +73,7 @@ const step: IntegrationStep = {
                 );
               }
             });
-            await jobState.addRelationships(relationships);
+            await jobState.addRelationships(findingRelationships);
           }
         }
       }

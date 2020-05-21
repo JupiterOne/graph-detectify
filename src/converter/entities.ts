@@ -9,6 +9,7 @@ import {
   getHostnameFromUrl,
   getCVSS3Severity,
   getCVSS2Severity,
+  buildReportSummary,
 } from './utils';
 
 export const getAccountEntity = (instance: any): Entity => ({
@@ -90,6 +91,39 @@ export const convertProfile = (
         createdOn: getTime(data.created),
         status: data.status,
         token: data.token,
+      },
+    },
+  });
+
+export const convertReport = (
+  data: any,
+): ReturnType<typeof createIntegrationEntity> =>
+  createIntegrationEntity({
+    entityData: {
+      source: data,
+      assign: {
+        _key: `detectify-report:${data.token}`,
+        _type: 'detectify_report',
+        _class: ['Assessment'],
+        name: data.scan_profile_name,
+        displayName: data.scan_profile_name,
+        category: 'Vulnerability Scan',
+        summary: buildReportSummary(data),
+        endpoint: data.endpoint,
+        createdOn: getTime(data.created),
+        startedOn: getTime(data.started),
+        stoppedOn: getTime(data.stopped),
+        cvss: data.cvss,
+        score: data.cvss,
+        scanProfileName: data.scan_profile_name,
+        scanProfileToken: data.scan_profile_token,
+        highSevFindings: data.high_level_findings,
+        mediumSevFindings: data.medium_level_findings,
+        lowSevFindings: data.low_level_findings,
+        infoFindings: data.information_findings,
+        token: data.token,
+        webLink: data.url,
+        internal: false,
       },
     },
   });

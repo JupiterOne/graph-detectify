@@ -47,16 +47,18 @@ The following entity resources are ingested when the integration runs.
 | Asset (Subdomain)   | `web_app_endpoint`       | `ApplicationEndpoint` |
 | Scan Profile        | `detectify_scan_profile` | `Configuration`       |
 | Finding             | `detectify_finding`      | `Finding`             |
+| Report              | `detectify_report`       | `Assessment`          |
 
 ## Relationships
 
 The following relationships are created:
 
-| From                 | Relationship | To                       |
-| -------------------- | ------------ | ------------------------ |
-| `web_app`            | **HAS**      | `detectify_scan_profile` |
-| `web_app`            | **HAS**      | `web_app_endpoint`       |
-| `detectify_endpoint` | **HAS**      | `detectify_finding`      |
+| From                 | Relationship   | To                       |
+| -------------------- | -------------- | ------------------------ |
+| `web_app`            | **HAS**        | `detectify_scan_profile` |
+| `web_app`            | **HAS**        | `web_app_endpoint`       |
+| `detectify_endpoint` | **HAS**        | `detectify_finding`      |
+| `detectify_report`   | **IDENTIFIED** | `detectify_finding`      |
 
 The following relationships are mapped:
 

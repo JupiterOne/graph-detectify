@@ -41,3 +41,13 @@ export function getCVSS3Severity(
     return 'info';
   }
 }
+
+export function buildReportSummary(data: any): string {
+  const findingsCount =
+    (data.high_level_findings || 0) +
+    (data.medium_level_findings || 0) +
+    (data.low_level_findings || 0) +
+    (data.information_findings || 0);
+
+  return `Scan identified ${findingsCount} findings with a collective score of ${data.cvss}.`;
+}
