@@ -43,8 +43,8 @@ const step: IntegrationStep = {
           if (findingEntity.endpoint) {
             relationships.push(
               createIntegrationRelationship({
-                fromType: 'detectify_endpoint',
-                fromKey: `detectify-endpoint:${findingEntity.endpoint}`,
+                fromType: 'web_app_endpoint',
+                fromKey: `web-app-endpoint:${findingEntity.endpoint}`,
                 toType: findingEntity._type,
                 toKey: findingEntity._key,
                 _class: 'HAS',

@@ -42,8 +42,8 @@ const step: IntegrationStep = {
             const relationships = [];
             relationships.push(
               createIntegrationRelationship({
-                fromType: 'detectify_asset',
-                fromKey: `detectify-asset:${domain.name}`,
+                fromType: 'web_app',
+                fromKey: `web-app:${domain.name}`,
                 toType: profileEntity._type,
                 toKey: profileEntity._key,
                 _class: 'HAS',
@@ -53,8 +53,8 @@ const step: IntegrationStep = {
               if (findingEntity.endpoint) {
                 relationships.push(
                   createIntegrationRelationship({
-                    fromType: 'detectify_endpoint',
-                    fromKey: `detectify-endpoint:${findingEntity.endpoint}`,
+                    fromType: 'web_app_endpoint',
+                    fromKey: `web-app-endpoint:${findingEntity.endpoint}`,
                     toType: findingEntity._type,
                     toKey: findingEntity._key,
                     _class: 'HAS',

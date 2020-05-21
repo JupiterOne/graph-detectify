@@ -10,7 +10,7 @@ import { convertDomain, convertSubdomain } from '../../converter';
 const step: IntegrationStep = {
   id: 'fetch-assets',
   name: 'Fetch Detectify domains and subdomains (application endpoints)',
-  types: ['detectify_asset'],
+  types: ['web_app', 'web_app_endpoint'],
   async executionHandler({
     instance,
     jobState,

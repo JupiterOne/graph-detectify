@@ -3,12 +3,33 @@ import {
   createIntegrationEntity,
   getTime,
   convertProperties,
+  Entity,
 } from '@jupiterone/integration-sdk';
 import {
   getHostnameFromUrl,
   getCVSS3Severity,
   getCVSS2Severity,
 } from './utils';
+
+export const getAccountEntity = (instance: any): Entity => ({
+  _key: `detectify:account:${instance.id}`,
+  _type: 'detectify_account',
+  _class: ['Account'],
+  name: instance.name,
+  displayName: instance.name,
+  description: instance.description,
+});
+
+export const getServiceEntity = (instance: any): Entity => ({
+  _key: `detectify:service:${instance.id}:mast`,
+  _type: 'detectify_service',
+  _class: ['Service'],
+  name: 'Detectify DAST',
+  displayName: 'Detectify DAST',
+  description: 'Dynamic Application Security Testing (MAST)',
+  category: 'software',
+  function: 'DAST',
+});
 
 export const convertDomain = (
   data: any,
@@ -18,8 +39,8 @@ export const convertDomain = (
       source: data,
       assign: {
         ...convertProperties(data),
-        _key: `detectify-asset:${data.name}`,
-        _type: 'detectify_asset',
+        _key: `web-app:${data.name}`,
+        _type: 'web_app',
         _class: ['Application'],
         displayName: data.name,
         createdOn: getTime(data.created),
@@ -38,8 +59,8 @@ export const convertSubdomain = (
     entityData: {
       source: data,
       assign: {
-        _key: `detectify-endpoint:${data.name}`,
-        _type: 'detectify_endpoint',
+        _key: `web-app-endpoint:${data.name}`,
+        _type: 'web_app_endpoint',
         _class: ['ApplicationEndpoint'],
         name: data.name,
         displayName: data.name,
