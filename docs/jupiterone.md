@@ -43,7 +43,8 @@ The following entity resources are ingested when the integration runs.
 | Detectify Resources | \_type of the Entity     | \_class of the Entity |
 | ------------------- | ------------------------ | --------------------- |
 | Account             | `detectify_account`      | `Account`             |
-| Asset (Domain)      | `web_app`                | `Application`         |
+| Service             | `detectify_service`      | `Service`             |
+| Asset (Domain)      | `web_app_domain`         | `Application`         |
 | Asset (Subdomain)   | `web_app_endpoint`       | `ApplicationEndpoint` |
 | Scan Profile        | `detectify_scan_profile` | `Configuration`       |
 | Finding             | `detectify_finding`      | `Finding`             |
@@ -55,15 +56,17 @@ The following relationships are created:
 
 | From                 | Relationship   | To                       |
 | -------------------- | -------------- | ------------------------ |
-| `web_app`            | **HAS**        | `detectify_scan_profile` |
-| `web_app`            | **HAS**        | `web_app_endpoint`       |
+| `detectify_account`  | **PROVIDES**   | `detectify_service`      |
+| `detectify_account`  | **HAS**        | `web_app`                |
+| `web_app_domain`     | **HAS**        | `detectify_scan_profile` |
+| `web_app_domain`     | **HAS**        | `web_app_endpoint`       |
 | `detectify_endpoint` | **HAS**        | `detectify_finding`      |
 | `detectify_report`   | **IDENTIFIED** | `detectify_finding`      |
 
 The following relationships are mapped:
 
-| From     | Relationship | To        |
-| -------- | ------------ | --------- |
-| `<ROOT>` | **DEVELOPS** | `web_app` |
+| From     | Relationship | To               |
+| -------- | ------------ | ---------------- |
+| `<ROOT>` | **DEVELOPS** | `web_app_domain` |
 
 [1]: https://developer.detectify.com/

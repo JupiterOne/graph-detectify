@@ -40,8 +40,8 @@ export const convertDomain = (
       source: data,
       assign: {
         ...convertProperties(data),
-        _key: `web-app:${data.name}`,
-        _type: 'web_app',
+        _key: `web-app-domain:${data.name}`,
+        _type: 'web_app_domain',
         _class: ['Application'],
         displayName: data.name,
         createdOn: getTime(data.created),

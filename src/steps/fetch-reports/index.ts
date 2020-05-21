@@ -43,8 +43,8 @@ const step: IntegrationStep = {
             await jobState.addEntities(findingEntities);
 
             const scanProfileRelationship = createIntegrationRelationship({
-              fromType: 'web_app',
-              fromKey: `web-app:${domain.name}`,
+              fromType: 'web_app_domain',
+              fromKey: `web-app-domain:${domain.name}`,
               toType: profileEntity._type,
               toKey: profileEntity._key,
               _class: 'HAS',
