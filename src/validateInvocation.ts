@@ -1,7 +1,7 @@
 import {
   IntegrationExecutionContext,
   IntegrationProviderAuthenticationError,
-} from '@jupiterone/integration-sdk';
+} from '@jupiterone/integration-sdk-core';
 
 import { createServicesClient } from './collector';
 
