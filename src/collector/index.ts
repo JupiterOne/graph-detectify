@@ -1,4 +1,4 @@
-import { IntegrationInstance } from '@jupiterone/integration-sdk';
+import { IntegrationInstance } from '@jupiterone/integration-sdk-core';
 import { ServicesClient, ServicesClientInput } from './ServicesClient';
 
 /**

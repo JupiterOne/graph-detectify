@@ -2,7 +2,8 @@ import {
   IntegrationStep,
   IntegrationStepExecutionContext,
   createIntegrationRelationship,
-} from '@jupiterone/integration-sdk';
+  Relationship,
+} from '@jupiterone/integration-sdk-core';
 
 import { createServicesClient } from '../../collector';
 import {
@@ -74,7 +75,7 @@ const step: IntegrationStep = {
             });
             await jobState.addRelationship(scanProfileRelationship);
 
-            const findingRelationships = [];
+            const findingRelationships: Relationship[] = [];
             findingEntities.forEach((findingEntity) => {
               findingRelationships.push(
                 createIntegrationRelationship({

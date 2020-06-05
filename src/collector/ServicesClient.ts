@@ -6,6 +6,7 @@ import { retryableRequestError, fatalRequestError } from './error';
 import { URLSearchParams } from 'url';
 
 export interface ServicesClientInput {
+  getLatestScanFindings?: boolean;
   apiKey: string;
 }
 

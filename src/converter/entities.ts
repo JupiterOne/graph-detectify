@@ -4,7 +4,7 @@ import {
   getTime,
   convertProperties,
   Entity,
-} from '@jupiterone/integration-sdk';
+} from '@jupiterone/integration-sdk-core';
 import {
   getHostnameFromUrl,
   getCVSS3Severity,
