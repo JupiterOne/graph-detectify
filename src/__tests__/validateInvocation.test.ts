@@ -3,6 +3,7 @@ import { createMockExecutionContext } from '@jupiterone/integration-sdk-testing'
 import validateInvocation from '../validateInvocation';
 
 import fetchMock from 'jest-fetch-mock';
+import { ServicesClientInput } from 'src/collector/ServicesClient';
 
 beforeEach(() => {
   fetchMock.doMock();
@@ -11,7 +12,7 @@ beforeEach(() => {
 test('rejects if apiKey is not present', async () => {
   fetchMock.mockResponse('{}');
 
-  const context = createMockExecutionContext();
+  const context = createMockExecutionContext<ServicesClientInput>();
   context.instance.config['apiKey'] = undefined;
 
   await expect(validateInvocation(context)).rejects.toThrow(
@@ -27,9 +28,9 @@ test('rejects if unable to hit provider apis', async () => {
     }),
   );
 
-  const context = createMockExecutionContext();
+  const context = createMockExecutionContext<ServicesClientInput>();
   context.instance.config = {
-    apiToken: 'test',
+    apiKey: 'test',
   };
 
   await expect(validateInvocation(context)).rejects.toThrow(
@@ -40,9 +41,9 @@ test('rejects if unable to hit provider apis', async () => {
 test('performs sample api call to ensure api can be hit', async () => {
   fetchMock.mockResponse(JSON.stringify({ result: [] }));
 
-  const context = createMockExecutionContext();
+  const context = createMockExecutionContext<ServicesClientInput>();
   context.instance.config = {
-    getLastReport: false,
+    getLatestScanFindings: false,
     apiKey: 'test',
   };
 
