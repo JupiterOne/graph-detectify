@@ -21,7 +21,7 @@
     "test": "jest --passWithNoTests",
     "test:ci": "yarn lint && yarn type-check && yarn test",
     "prebuild": "yarn test:ci",
-    "prepush": "yarn test",
+    "prepush": "yarn type-check && yarn test",
     "build": "tsc -p tsconfig.dist.json --declaration",
     "prepack": "yarn build"
   },

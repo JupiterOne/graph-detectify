@@ -3,7 +3,7 @@ import { createMockExecutionContext } from '@jupiterone/integration-sdk-testing'
 import validateInvocation from '../validateInvocation';
 
 import fetchMock from 'jest-fetch-mock';
-import { ServicesClientInput } from 'src/collector/ServicesClient';
+import { ServicesClientInput } from '../collector/ServicesClient';
 
 beforeEach(() => {
   fetchMock.doMock();
@@ -13,7 +13,7 @@ test('rejects if apiKey is not present', async () => {
   fetchMock.mockResponse('{}');
 
   const context = createMockExecutionContext<ServicesClientInput>();
-  context.instance.config['apiKey'] = undefined;
+  context.instance.config = {} as ServicesClientInput;
 
   await expect(validateInvocation(context)).rejects.toThrow(
     /Provider authentication failed/,
