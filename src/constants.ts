@@ -1,3 +1,11 @@
+export const Steps = {
+  ACCOUNT: 'fetch-account',
+  ASSETS: 'fetch-assets',
+  FINDINGS: 'fetch-findings',
+  SCAN_PROFILES: 'fetch-scan-profiles',
+  REPORTS: 'fetch-reports',
+};
+
 export const Entities = {
   ACCOUNT: { _type: 'detectify_account' },
   SERVICE: { _type: 'detectify_service' },
