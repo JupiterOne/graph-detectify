@@ -11,11 +11,12 @@ import {
   getServiceEntity,
   getAccountEntity,
 } from '../../converter';
+import { Entities } from '../../constants';
 
 const step: IntegrationStep = {
   id: 'fetch-assets',
   name: 'Fetch Detectify domains and subdomains (application endpoints)',
-  types: ['web_app_domain', 'web_app_endpoint'],
+  types: [Entities.WEB_APP_DOMAIN._type, Entities.WEB_APP_ENDPOINT._type],
   async executionHandler({
     instance,
     jobState,

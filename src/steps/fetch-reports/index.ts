@@ -8,16 +8,16 @@ import {
 import { createServicesClient } from '../../collector';
 import {
   convertFinding,
-  convertProfile,
   convertReport,
   getAccountEntity,
   getServiceEntity,
 } from '../../converter';
+import { Entities } from '../../constants';
 
 const step: IntegrationStep = {
   id: 'fetch-reports',
   name: 'Fetch Detectify findings from the latest scan reports',
-  types: ['detectify_finding', 'detectify_scan_profile', 'detectify_scan'],
+  types: [Entities.FINDING._type, Entities.REPORT._type],
   async executionHandler({
     instance,
     jobState,
@@ -31,77 +31,62 @@ const step: IntegrationStep = {
     const serviceEntity = getServiceEntity(instance);
 
     const client = createServicesClient(instance);
-    const domains = await client.getRootDomains();
 
-    for (const domain of domains) {
-      if (domain.token) {
-        const profiles = await client.getScanProfiles(domain.token);
-        const profileEntities = profiles.map(convertProfile);
-        await jobState.addEntities(profileEntities);
+    await jobState.iterateEntities(
+      { _type: Entities.SCAN_PROFILE._type },
+      async (profileEntity) => {
+        if (profileEntity.token) {
+          const report = await client.getLatestFullReport(
+            profileEntity.token as string,
+          );
+          const reportEntity = convertReport(report);
+          await jobState.addEntity(reportEntity);
 
-        for (const profileEntity of profileEntities) {
-          if (profileEntity.token) {
-            const report = await client.getLatestFullReport(
-              profileEntity.token,
+          const accountReportRelationship = createIntegrationRelationship({
+            from: accountEntity,
+            to: reportEntity,
+            _class: 'HAS',
+          });
+          await jobState.addRelationship(accountReportRelationship);
+
+          const serviceReportRelationship = createIntegrationRelationship({
+            from: serviceEntity,
+            to: reportEntity,
+            _class: 'PERFORMED',
+          });
+          await jobState.addRelationship(serviceReportRelationship);
+
+          const findingEntities = report.findings
+            ? report.findings.map(convertFinding)
+            : [];
+          await jobState.addEntities(findingEntities);
+
+          const findingRelationships: Relationship[] = [];
+          findingEntities.forEach((findingEntity) => {
+            findingRelationships.push(
+              createIntegrationRelationship({
+                from: reportEntity,
+                to: findingEntity,
+                _class: 'IDENTIFIED',
+              }),
             );
-            const reportEntity = convertReport(report);
-            await jobState.addEntity(reportEntity);
 
-            const accountReportRelationship = createIntegrationRelationship({
-              from: accountEntity,
-              to: reportEntity,
-              _class: 'HAS',
-            });
-            await jobState.addRelationship(accountReportRelationship);
-
-            const serviceReportRelationship = createIntegrationRelationship({
-              from: serviceEntity,
-              to: reportEntity,
-              _class: 'PERFORMED',
-            });
-            await jobState.addRelationship(serviceReportRelationship);
-
-            const findingEntities = report.findings
-              ? report.findings.map(convertFinding)
-              : [];
-            await jobState.addEntities(findingEntities);
-
-            const scanProfileRelationship = createIntegrationRelationship({
-              fromType: 'web_app_domain',
-              fromKey: `web-app-domain:${domain.name}`,
-              toType: profileEntity._type,
-              toKey: profileEntity._key,
-              _class: 'HAS',
-            });
-            await jobState.addRelationship(scanProfileRelationship);
-
-            const findingRelationships: Relationship[] = [];
-            findingEntities.forEach((findingEntity) => {
+            if (findingEntity.endpoint) {
               findingRelationships.push(
                 createIntegrationRelationship({
-                  from: reportEntity,
-                  to: findingEntity,
-                  _class: 'IDENTIFIED',
+                  fromType: Entities.WEB_APP_ENDPOINT._type,
+                  fromKey: `web-app-endpoint:${findingEntity.endpoint}`,
+                  toType: findingEntity._type,
+                  toKey: findingEntity._key,
+                  _class: 'HAS',
                 }),
               );
-
-              if (findingEntity.endpoint) {
-                findingRelationships.push(
-                  createIntegrationRelationship({
-                    fromType: 'web_app_endpoint',
-                    fromKey: `web-app-endpoint:${findingEntity.endpoint}`,
-                    toType: findingEntity._type,
-                    toKey: findingEntity._key,
-                    _class: 'HAS',
-                  }),
-                );
-              }
-            });
-            await jobState.addRelationships(findingRelationships);
-          }
+            }
+          });
+          await jobState.addRelationships(findingRelationships);
         }
-      }
-    }
+      },
+    );
   },
 };
 

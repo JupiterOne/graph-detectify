@@ -4,6 +4,7 @@ import nodeFetch, { Request } from 'node-fetch';
 
 import { retryableRequestError, fatalRequestError } from './error';
 import { URLSearchParams } from 'url';
+import { IntegrationProviderAPIError } from '@jupiterone/integration-sdk-core';
 
 export interface ServicesClientInput {
   getLatestScanFindings?: boolean;
@@ -56,43 +57,65 @@ export class ServicesClient {
   }
 
   fetch<T = object>(
-    url: string,
+    endpoint: string,
     queryParams: QueryParam = {},
     request?: Omit<Request, 'url'>,
   ): Promise<T> {
     return retry(
       async () => {
         const qs = new URLSearchParams(queryParams).toString();
-        const response = await nodeFetch(
-          `${BASE_URL}${url}${qs ? '?' + qs : ''}`,
-          {
+        const url = `${BASE_URL}${endpoint}${qs ? '?' + qs : ''}`;
+        let response;
+        try {
+          response = await nodeFetch(url, {
             ...request,
             headers: {
               ...this.authHeader,
               ...request?.headers,
             },
-          },
-        );
+          });
+        } catch (err) {
+          const providerErr = new IntegrationProviderAPIError({
+            cause: err,
+            endpoint: url,
+            status: err.code,
+            statusText: err.message,
+          });
+          (providerErr as any).retryable = true;
+          throw providerErr;
+        }
 
         /**
          * We are working with a json api, so just return the parsed data.
          */
         if (response.ok) {
-          return response.json() as T;
+          return response.json() as Promise<T>;
+        }
+
+        let errorInformation;
+        try {
+          errorInformation = await response.json();
+        } catch (err) {
+          // pass
         }
 
         if (isRetryableRequest(response)) {
-          throw retryableRequestError(response);
+          throw retryableRequestError(response, errorInformation, url);
         } else {
-          throw fatalRequestError(response);
+          throw fatalRequestError(response, errorInformation, url);
         }
       },
       {
-        maxAttempts: 10,
+        maxAttempts: 8, // max delay = 0.2s x 2^8 = 51.2s
         delay: 200,
         factor: 2,
         jitter: true,
         handleError: (err, context) => {
+          // On node-fetch errors with code='ECONNRESET', retry request
+          if (err.code === 'ECONNRESET') {
+            err.retryable = true;
+          }
+
           if (!err.retryable) {
             // can't retry this? just abort
             context.abort();
