@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 0.5.1 - 2020-10-28
+
+### Fixed
+
+- Add `dependsOn: ['fetch-scan-profiles']` for `fetch-reports` step
+
 ## 0.5.0 - 2020-10-28
 
 ### Changed

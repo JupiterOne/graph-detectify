@@ -6,11 +6,11 @@ import {
 
 import { createServicesClient } from '../../collector';
 import { convertProfile } from '../../converter';
-import { Entities } from '../../constants';
+import { Entities, Steps } from '../../constants';
 
 const step: IntegrationStep = {
-  id: 'fetch-scan-profiles',
-  name: 'Fetch Detectify findings from the latest scan reports',
+  id: Steps.SCAN_PROFILES,
+  name: 'Fetch Detectify scan reports',
   types: [Entities.SCAN_PROFILE._type],
   async executionHandler({
     instance,

@@ -12,12 +12,13 @@ import {
   getAccountEntity,
   getServiceEntity,
 } from '../../converter';
-import { Entities } from '../../constants';
+import { Entities, Steps } from '../../constants';
 
 const step: IntegrationStep = {
-  id: 'fetch-reports',
+  id: Steps.REPORTS,
   name: 'Fetch Detectify findings from the latest scan reports',
   types: [Entities.FINDING._type, Entities.REPORT._type],
+  dependsOn: [Steps.SCAN_PROFILES],
   async executionHandler({
     instance,
     jobState,
