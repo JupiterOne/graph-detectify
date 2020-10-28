@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 0.5.0 - 2020-10-28
+
 ### Changed
 
 - Separated `fetch-reports` from `fetch-scan-profiles` step
