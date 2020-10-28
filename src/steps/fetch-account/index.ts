@@ -1,16 +1,18 @@
 import {
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationRelationship,
+  createDirectRelationship,
+  RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
 
 import { getAccountEntity, getServiceEntity } from '../../converter';
-import { Entities, Steps } from '../../constants';
+import { Entities, Steps, Relationships } from '../../constants';
 
 const step: IntegrationStep = {
   id: Steps.ACCOUNT,
   name: 'Fetch Detectify account and service',
-  types: [Entities.ACCOUNT._type, Entities.SERVICE._type],
+  entities: [Entities.ACCOUNT, Entities.SERVICE],
+  relationships: [Relationships.ACCOUNT_PROVIDES_SERVICE],
   async executionHandler({
     instance,
     jobState,
@@ -21,10 +23,10 @@ const step: IntegrationStep = {
     const serviceEntity = getServiceEntity(instance);
     await jobState.addEntity(serviceEntity);
 
-    const accountServiceRelationship = createIntegrationRelationship({
+    const accountServiceRelationship = createDirectRelationship({
       from: accountEntity,
       to: serviceEntity,
-      _class: 'PROVIDES',
+      _class: RelationshipClass.PROVIDES,
     });
     await jobState.addRelationship(accountServiceRelationship);
   },

@@ -1,13 +1,14 @@
 import {
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationRelationship,
+  createDirectRelationship,
   Relationship,
+  RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
 
 import { createServicesClient } from '../../collector';
 import { convertFinding } from '../../converter';
-import { Entities, Steps } from '../../constants';
+import { Entities, Steps, Relationships } from '../../constants';
 
 const MS_IN_A_DAY = 86400000;
 const DAYS_TO_GET = 30;
@@ -15,7 +16,8 @@ const DAYS_TO_GET = 30;
 const step: IntegrationStep = {
   id: Steps.FINDINGS,
   name: `Fetch Detectify findings from past ${DAYS_TO_GET} days`,
-  types: [Entities.FINDING._type],
+  entities: [Entities.FINDING],
+  relationships: [Relationships.ENDPOINT_HAS_FINDING],
   async executionHandler({
     instance,
     jobState,
@@ -44,12 +46,12 @@ const step: IntegrationStep = {
         findingEntities.forEach((findingEntity) => {
           if (findingEntity.endpoint) {
             relationships.push(
-              createIntegrationRelationship({
+              createDirectRelationship({
                 fromType: Entities.WEB_APP_ENDPOINT._type,
                 fromKey: `web-app-endpoint:${findingEntity.endpoint}`,
                 toType: findingEntity._type,
                 toKey: findingEntity._key,
-                _class: 'HAS',
+                _class: RelationshipClass.HAS,
               }),
             );
           }

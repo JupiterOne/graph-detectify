@@ -1,17 +1,19 @@
 import {
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationRelationship,
+  createDirectRelationship,
+  RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
 
 import { createServicesClient } from '../../collector';
 import { convertProfile } from '../../converter';
-import { Entities, Steps } from '../../constants';
+import { Entities, Steps, Relationships } from '../../constants';
 
 const step: IntegrationStep = {
   id: Steps.SCAN_PROFILES,
   name: 'Fetch Detectify scan reports',
-  types: [Entities.SCAN_PROFILE._type],
+  entities: [Entities.SCAN_PROFILE],
+  relationships: [Relationships.DOMAIN_HAS_SCAN_PROFILE],
   async executionHandler({
     instance,
     jobState,
@@ -32,12 +34,12 @@ const step: IntegrationStep = {
 
         for (const profileEntity of profileEntities) {
           if (profileEntity.token) {
-            const scanProfileRelationship = createIntegrationRelationship({
+            const scanProfileRelationship = createDirectRelationship({
               fromType: Entities.WEB_APP_DOMAIN._type,
               fromKey: `web-app-domain:${domain.name}`,
               toType: profileEntity._type,
               toKey: profileEntity._key,
-              _class: 'HAS',
+              _class: RelationshipClass.HAS,
             });
             await jobState.addRelationship(scanProfileRelationship);
           }

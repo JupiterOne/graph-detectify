@@ -16,7 +16,7 @@ import { Entities } from '../constants';
 export const getAccountEntity = (instance: any): Entity => ({
   _key: `detectify:account:${instance.id}`,
   _type: Entities.ACCOUNT._type,
-  _class: ['Account'],
+  _class: Entities.ACCOUNT._class,
   name: instance.name,
   displayName: instance.name,
   description: instance.description,
@@ -25,7 +25,7 @@ export const getAccountEntity = (instance: any): Entity => ({
 export const getServiceEntity = (instance: any): Entity => ({
   _key: `detectify:service:${instance.id}:mast`,
   _type: Entities.SERVICE._type,
-  _class: ['Service'],
+  _class: Entities.SERVICE._class,
   name: 'Detectify DAST',
   displayName: 'Detectify DAST',
   description: 'Dynamic Application Security Testing (MAST)',
@@ -43,7 +43,7 @@ export const convertDomain = (
         ...convertProperties(data),
         _key: `web-app-domain:${data.name}`,
         _type: Entities.WEB_APP_DOMAIN._type,
-        _class: ['Application'],
+        _class: Entities.WEB_APP_DOMAIN._class,
         displayName: data.name,
         createdOn: getTime(data.created),
         updatedOn: getTime(data.updated),
@@ -63,7 +63,7 @@ export const convertSubdomain = (
       assign: {
         _key: `web-app-endpoint:${data.name}`,
         _type: Entities.WEB_APP_ENDPOINT._type,
-        _class: ['ApplicationEndpoint'],
+        _class: Entities.WEB_APP_ENDPOINT._class,
         name: data.name,
         displayName: data.name,
         address: data.name,
@@ -85,7 +85,7 @@ export const convertProfile = (
       assign: {
         _key: `detectify-scan-profile:${data.token}`,
         _type: Entities.SCAN_PROFILE._type,
-        _class: ['Configuration'],
+        _class: Entities.SCAN_PROFILE._class,
         name: data.name,
         displayName: data.name,
         endpoint: data.endpoint,
@@ -105,7 +105,7 @@ export const convertReport = (
       assign: {
         _key: `detectify-scan:${data.token}`,
         _type: Entities.REPORT._type,
-        _class: ['Assessment'],
+        _class: Entities.REPORT._class,
         name: data.scan_profile_name,
         displayName: data.scan_profile_name,
         category: 'Vulnerability Scan',
@@ -148,7 +148,7 @@ export const convertFinding = (
         ...convertProperties(data),
         _key: `detectify-finding:${data.uuid}`,
         _type: Entities.FINDING._type,
-        _class: ['Finding'],
+        _class: Entities.FINDING._class,
         name: data.title,
         displayName: data.title,
         category: 'app-scan',

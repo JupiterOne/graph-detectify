@@ -15,6 +15,7 @@
     "collect": "j1-integration collect",
     "graph": "j1-integration visualize",
     "start": "yarn collect; yarn graph",
+    "document": "yarn j1-integration document",
     "lint": "eslint . --cache --fix --ext .ts,.tsx",
     "format": "prettier --write '**/*.{ts,js,json,css,md,yml}'",
     "type-check": "tsc",
@@ -31,9 +32,9 @@
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
-    "@jupiterone/integration-sdk-core": "^2.2.0",
-    "@jupiterone/integration-sdk-dev-tools": "^2.2.0",
-    "@jupiterone/integration-sdk-testing": "^2.2.0",
+    "@jupiterone/integration-sdk-core": "^3.8.0",
+    "@jupiterone/integration-sdk-dev-tools": "3.8.0",
+    "@jupiterone/integration-sdk-testing": "^3.8.0",
     "@types/har-format": "^1.2.4",
     "@types/jest": "^25.2.1",
     "@types/node": "^13.11.1",
@@ -56,6 +57,6 @@
     "wait-for-expect": "^3.0.2"
   },
   "peerDependencies": {
-    "@jupiterone/integration-sdk-core": "^2.2.0"
+    "@jupiterone/integration-sdk-core": "^3.8.0"
   }
 }
