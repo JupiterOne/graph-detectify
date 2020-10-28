@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 0.5.2 - 2020-10-28
+
+- Add `fetch-scan-profiles` step to integration config
+
 ## 0.5.1 - 2020-10-28
 
 ### Fixed
