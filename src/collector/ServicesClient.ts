@@ -4,6 +4,7 @@ import nodeFetch, { Request } from 'node-fetch';
 
 import { retryableRequestError, fatalRequestError } from './error';
 import { URLSearchParams } from 'url';
+import { IntegrationProviderAPIError } from '@jupiterone/integration-sdk-core';
 
 export interface ServicesClientInput {
   getLatestScanFindings?: boolean;
@@ -64,13 +65,25 @@ export class ServicesClient {
       async () => {
         const qs = new URLSearchParams(queryParams).toString();
         const url = `${BASE_URL}${endpoint}${qs ? '?' + qs : ''}`;
-        const response = await nodeFetch(url, {
-          ...request,
-          headers: {
-            ...this.authHeader,
-            ...request?.headers,
-          },
-        });
+        let response;
+        try {
+          response = await nodeFetch(url, {
+            ...request,
+            headers: {
+              ...this.authHeader,
+              ...request?.headers,
+            },
+          });
+        } catch (err) {
+          const providerErr = new IntegrationProviderAPIError({
+            cause: err,
+            endpoint: url,
+            status: err.code,
+            statusText: err.message,
+          });
+          (providerErr as any).retryable = true;
+          throw providerErr;
+        }
 
         /**
          * We are working with a json api, so just return the parsed data.
@@ -93,7 +106,7 @@ export class ServicesClient {
         }
       },
       {
-        maxAttempts: 10,
+        maxAttempts: 8, // max delay = 0.2s x 2^8 = 51.2s
         delay: 200,
         factor: 2,
         jitter: true,
