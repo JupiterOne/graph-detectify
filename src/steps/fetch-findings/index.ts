@@ -7,6 +7,7 @@ import {
 
 import { createServicesClient } from '../../collector';
 import { convertFinding } from '../../converter';
+import { Entities } from '../../constants';
 
 const MS_IN_A_DAY = 86400000;
 const DAYS_TO_GET = 30;
@@ -14,7 +15,7 @@ const DAYS_TO_GET = 30;
 const step: IntegrationStep = {
   id: 'fetch-findings',
   name: `Fetch Detectify findings from past ${DAYS_TO_GET} days`,
-  types: ['detectify_finding'],
+  types: [Entities.FINDING._type],
   async executionHandler({
     instance,
     jobState,
@@ -44,7 +45,7 @@ const step: IntegrationStep = {
           if (findingEntity.endpoint) {
             relationships.push(
               createIntegrationRelationship({
-                fromType: 'web_app_endpoint',
+                fromType: Entities.WEB_APP_ENDPOINT._type,
                 fromKey: `web-app-endpoint:${findingEntity.endpoint}`,
                 toType: findingEntity._type,
                 toKey: findingEntity._key,

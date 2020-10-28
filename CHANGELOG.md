@@ -8,6 +8,15 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- Separated `fetch-reports` from `fetch-scan-profiles` step
+
+### Fixed
+
+- Throw `IntegrationProviderAPIError` on non-200 responses
+- Retry `ECONNRESET` node-fetch errors
+
 ## 0.1.0 - 2020-05-20
 
 ### Added

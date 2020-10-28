@@ -11,10 +11,11 @@ import {
   getCVSS2Severity,
   buildReportSummary,
 } from './utils';
+import { Entities } from '../constants';
 
 export const getAccountEntity = (instance: any): Entity => ({
   _key: `detectify:account:${instance.id}`,
-  _type: 'detectify_account',
+  _type: Entities.ACCOUNT._type,
   _class: ['Account'],
   name: instance.name,
   displayName: instance.name,
@@ -23,7 +24,7 @@ export const getAccountEntity = (instance: any): Entity => ({
 
 export const getServiceEntity = (instance: any): Entity => ({
   _key: `detectify:service:${instance.id}:mast`,
-  _type: 'detectify_service',
+  _type: Entities.SERVICE._type,
   _class: ['Service'],
   name: 'Detectify DAST',
   displayName: 'Detectify DAST',
@@ -41,7 +42,7 @@ export const convertDomain = (
       assign: {
         ...convertProperties(data),
         _key: `web-app-domain:${data.name}`,
-        _type: 'web_app_domain',
+        _type: Entities.WEB_APP_DOMAIN._type,
         _class: ['Application'],
         displayName: data.name,
         createdOn: getTime(data.created),
@@ -61,7 +62,7 @@ export const convertSubdomain = (
       source: data,
       assign: {
         _key: `web-app-endpoint:${data.name}`,
-        _type: 'web_app_endpoint',
+        _type: Entities.WEB_APP_ENDPOINT._type,
         _class: ['ApplicationEndpoint'],
         name: data.name,
         displayName: data.name,
@@ -83,7 +84,7 @@ export const convertProfile = (
       source: data,
       assign: {
         _key: `detectify-scan-profile:${data.token}`,
-        _type: 'detectify_scan_profile',
+        _type: Entities.SCAN_PROFILE._type,
         _class: ['Configuration'],
         name: data.name,
         displayName: data.name,
@@ -103,7 +104,7 @@ export const convertReport = (
       source: data,
       assign: {
         _key: `detectify-scan:${data.token}`,
-        _type: 'detectify_scan',
+        _type: Entities.REPORT._type,
         _class: ['Assessment'],
         name: data.scan_profile_name,
         displayName: data.scan_profile_name,
@@ -146,7 +147,7 @@ export const convertFinding = (
       assign: {
         ...convertProperties(data),
         _key: `detectify-finding:${data.uuid}`,
-        _type: 'detectify_finding',
+        _type: Entities.FINDING._type,
         _class: ['Finding'],
         name: data.title,
         displayName: data.title,

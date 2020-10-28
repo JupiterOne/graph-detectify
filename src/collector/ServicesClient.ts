@@ -56,35 +56,40 @@ export class ServicesClient {
   }
 
   fetch<T = object>(
-    url: string,
+    endpoint: string,
     queryParams: QueryParam = {},
     request?: Omit<Request, 'url'>,
   ): Promise<T> {
     return retry(
       async () => {
         const qs = new URLSearchParams(queryParams).toString();
-        const response = await nodeFetch(
-          `${BASE_URL}${url}${qs ? '?' + qs : ''}`,
-          {
-            ...request,
-            headers: {
-              ...this.authHeader,
-              ...request?.headers,
-            },
+        const url = `${BASE_URL}${endpoint}${qs ? '?' + qs : ''}`;
+        const response = await nodeFetch(url, {
+          ...request,
+          headers: {
+            ...this.authHeader,
+            ...request?.headers,
           },
-        );
+        });
 
         /**
          * We are working with a json api, so just return the parsed data.
          */
         if (response.ok) {
-          return response.json() as T;
+          return response.json() as Promise<T>;
+        }
+
+        let errorInformation;
+        try {
+          errorInformation = await response.json();
+        } catch (err) {
+          // pass
         }
 
         if (isRetryableRequest(response)) {
-          throw retryableRequestError(response);
+          throw retryableRequestError(response, errorInformation, url);
         } else {
-          throw fatalRequestError(response);
+          throw fatalRequestError(response, errorInformation, url);
         }
       },
       {
@@ -93,6 +98,11 @@ export class ServicesClient {
         factor: 2,
         jitter: true,
         handleError: (err, context) => {
+          // On node-fetch errors with code='ECONNRESET', retry request
+          if (err.code === 'ECONNRESET') {
+            err.retryable = true;
+          }
+
           if (!err.retryable) {
             // can't retry this? just abort
             context.abort();

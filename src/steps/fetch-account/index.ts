@@ -5,11 +5,12 @@ import {
 } from '@jupiterone/integration-sdk-core';
 
 import { getAccountEntity, getServiceEntity } from '../../converter';
+import { Entities } from '../../constants';
 
 const step: IntegrationStep = {
   id: 'fetch-account',
   name: 'Fetch Detectify account and service',
-  types: ['detectify_account', 'detectify_service'],
+  types: [Entities.ACCOUNT._type, Entities.SERVICE._type],
   async executionHandler({
     instance,
     jobState,
