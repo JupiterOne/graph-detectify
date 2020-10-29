@@ -11,8 +11,6 @@ JupiterOne by default ingests findings from the past 30 days. The configuration
 can be changed to ingest findings from the latest scan reports (this option
 requires Enterprise Plan from Detectify).
 
-## Data Model
-
 JupiterOne vulnerability management and scanner integration is built on this
 high level data model:
 
@@ -36,39 +34,60 @@ Service    - PERFORMS   -> Assessment
 Assessment - IDENTIFIED -> Finding
 ```
 
-## Entities
+[1]: https://developer.detectify.com/
 
-The following entity resources are ingested when the integration runs.
+<!-- {J1_DOCUMENTATION_MARKER_START} -->
+<!--
+********************************************************************************
+NOTE: ALL OF THE FOLLOWING DOCUMENTATION IS GENERATED USING THE
+"j1-integration document" COMMAND. DO NOT EDIT BY HAND! PLEASE SEE THE DEVELOPER
+DOCUMENTATION FOR USAGE INFORMATION:
 
-| Detectify Resources | \_type of the Entity     | \_class of the Entity |
-| ------------------- | ------------------------ | --------------------- |
-| Account             | `detectify_account`      | `Account`             |
-| Service             | `detectify_service`      | `Service`             |
-| Asset (Domain)      | `web_app_domain`         | `Application`         |
-| Asset (Subdomain)   | `web_app_endpoint`       | `ApplicationEndpoint` |
-| Scan Profile        | `detectify_scan_profile` | `Configuration`       |
-| Finding             | `detectify_finding`      | `Finding`             |
-| Scan Report         | `detectify_scan`         | `Assessment`          |
+https://github.com/JupiterOne/sdk/blob/master/docs/integrations/development.md
+********************************************************************************
+-->
 
-## Relationships
+## Data Model
 
-The following relationships are created:
+### Entities
 
-| From                 | Relationship   | To                       |
-| -------------------- | -------------- | ------------------------ |
-| `detectify_account`  | **PROVIDES**   | `detectify_service`      |
-| `detectify_account`  | **HAS**        | `web_app`                |
-| `web_app_domain`     | **HAS**        | `detectify_scan_profile` |
-| `web_app_domain`     | **HAS**        | `web_app_endpoint`       |
-| `detectify_account`  | **HAS**        | `detectify_scan`         |
-| `detectify_service`  | **PERFORMED**  | `detectify_scan`         |
-| `detectify_endpoint` | **HAS**        | `detectify_finding`      |
-| `detectify_scan`     | **IDENTIFIED** | `detectify_finding`      |
+The following entities are created:
+
+| Resources         | Entity `_type`           | Entity `_class`       |
+| ----------------- | ------------------------ | --------------------- |
+| Account           | `detectify_account`      | `Account`             |
+| Asset (Domain)    | `web_app_domain`         | `Application`         |
+| Asset (Subdomain) | `web_app_endpoint`       | `ApplicationEndpoint` |
+| Finding           | `detectify_finding`      | `Finding`             |
+| Scan Profile      | `detectify_scan_profile` | `Configuration`       |
+| Scan Report       | `detectify_scan`         | `Assessment`          |
+| Service           | `detectify_service`      | `Service`             |
+
+### Relationships
+
+The following relationships are created/mapped:
+
+| Source Entity `_type` | Relationship `_class` | Target Entity `_type`    |
+| --------------------- | --------------------- | ------------------------ |
+| `detectify_account`   | **HAS**               | `detectify_scan`         |
+| `detectify_account`   | **HAS**               | `web_app_domain`         |
+| `detectify_account`   | **PROVIDES**          | `detectify_service`      |
+| `detectify_scan`      | **IDENTIFIED**        | `detectify_finding`      |
+| `detectify_service`   | **PERFORMED**         | `detectify_scan`         |
+| `detectify_service`   | **SCANS**             | `web_app_domain`         |
+| `web_app_domain`      | **HAS**               | `detectify_scan_profile` |
+| `web_app_domain`      | **HAS**               | `web_app_endpoint`       |
+| `web_app_endpoint`    | **HAS**               | `detectify_finding`      |
+
+<!--
+********************************************************************************
+END OF GENERATED DOCUMENTATION AFTER BELOW MARKER
+********************************************************************************
+-->
+<!-- {J1_DOCUMENTATION_MARKER_END} -->
 
 The following relationships are mapped:
 
 | From     | Relationship | To               |
 | -------- | ------------ | ---------------- |
 | `<ROOT>` | **DEVELOPS** | `web_app_domain` |
-
-[1]: https://developer.detectify.com/

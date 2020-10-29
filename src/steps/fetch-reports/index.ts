@@ -1,8 +1,9 @@
 import {
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationRelationship,
+  createDirectRelationship,
   Relationship,
+  RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
 
 import { createServicesClient } from '../../collector';
@@ -12,12 +13,19 @@ import {
   getAccountEntity,
   getServiceEntity,
 } from '../../converter';
-import { Entities, Steps } from '../../constants';
+import { Entities, Steps, Relationships } from '../../constants';
 
 const step: IntegrationStep = {
   id: Steps.REPORTS,
   name: 'Fetch Detectify findings from the latest scan reports',
-  types: [Entities.FINDING._type, Entities.REPORT._type],
+  entities: [Entities.REPORT, Entities.FINDING],
+  relationships: [
+    Relationships.ACCOUNT_HAS_REPORT,
+    Relationships.SERVICE_PERFORMED_REPORT,
+    Relationships.REPORT_IDENTIFIED_FINDING,
+    Relationships.ENDPOINT_HAS_FINDING,
+  ],
+  // types: [Entities.FINDING._type, Entities.REPORT._type],
   dependsOn: [Steps.SCAN_PROFILES],
   async executionHandler({
     instance,
@@ -43,17 +51,17 @@ const step: IntegrationStep = {
           const reportEntity = convertReport(report);
           await jobState.addEntity(reportEntity);
 
-          const accountReportRelationship = createIntegrationRelationship({
+          const accountReportRelationship = createDirectRelationship({
             from: accountEntity,
             to: reportEntity,
-            _class: 'HAS',
+            _class: RelationshipClass.HAS,
           });
           await jobState.addRelationship(accountReportRelationship);
 
-          const serviceReportRelationship = createIntegrationRelationship({
+          const serviceReportRelationship = createDirectRelationship({
             from: serviceEntity,
             to: reportEntity,
-            _class: 'PERFORMED',
+            _class: RelationshipClass.PERFORMED,
           });
           await jobState.addRelationship(serviceReportRelationship);
 
@@ -65,21 +73,21 @@ const step: IntegrationStep = {
           const findingRelationships: Relationship[] = [];
           findingEntities.forEach((findingEntity) => {
             findingRelationships.push(
-              createIntegrationRelationship({
+              createDirectRelationship({
                 from: reportEntity,
                 to: findingEntity,
-                _class: 'IDENTIFIED',
+                _class: RelationshipClass.IDENTIFIED,
               }),
             );
 
             if (findingEntity.endpoint) {
               findingRelationships.push(
-                createIntegrationRelationship({
+                createDirectRelationship({
                   fromType: Entities.WEB_APP_ENDPOINT._type,
                   fromKey: `web-app-endpoint:${findingEntity.endpoint}`,
                   toType: findingEntity._type,
                   toKey: findingEntity._key,
-                  _class: 'HAS',
+                  _class: RelationshipClass.HAS,
                 }),
               );
             }

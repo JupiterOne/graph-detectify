@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Changed
+
+- Upgraded to SDK v3
+
 ## 0.5.2 - 2020-10-28
 
 - Add `fetch-scan-profiles` step to integration config

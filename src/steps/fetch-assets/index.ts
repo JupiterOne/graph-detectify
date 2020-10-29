@@ -1,7 +1,8 @@
 import {
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationRelationship,
+  createDirectRelationship,
+  RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
 
 import { createServicesClient } from '../../collector';
@@ -11,12 +12,17 @@ import {
   getServiceEntity,
   getAccountEntity,
 } from '../../converter';
-import { Entities, Steps } from '../../constants';
+import { Entities, Steps, Relationships } from '../../constants';
 
 const step: IntegrationStep = {
   id: Steps.ASSETS,
   name: 'Fetch Detectify domains and subdomains (application endpoints)',
-  types: [Entities.WEB_APP_DOMAIN._type, Entities.WEB_APP_ENDPOINT._type],
+  entities: [Entities.WEB_APP_DOMAIN, Entities.WEB_APP_ENDPOINT],
+  relationships: [
+    Relationships.SERVICE_SCANS_DOMAIN,
+    Relationships.ACCOUNT_HAS_DOMAIN,
+    Relationships.DOMAIN_HAS_SUBDOMAIN,
+  ],
   async executionHandler({
     instance,
     jobState,
@@ -29,20 +35,20 @@ const step: IntegrationStep = {
 
     const serviceEntity = getServiceEntity(instance);
     const serviceRelationships = domainEntities.map((domainEntity) =>
-      createIntegrationRelationship({
+      createDirectRelationship({
         from: serviceEntity,
         to: domainEntity,
-        _class: 'SCANS',
+        _class: RelationshipClass.SCANS,
       }),
     );
     await jobState.addRelationships(serviceRelationships);
 
     const accountEntity = getAccountEntity(instance);
     const accountRelationships = domainEntities.map((domainEntity) =>
-      createIntegrationRelationship({
+      createDirectRelationship({
         from: accountEntity,
         to: domainEntity,
-        _class: 'HAS',
+        _class: RelationshipClass.HAS,
       }),
     );
     await jobState.addRelationships(accountRelationships);
@@ -54,10 +60,10 @@ const step: IntegrationStep = {
         await jobState.addEntities(subdomainEntities);
 
         const endpointRelationships = subdomainEntities.map((subdomainEntity) =>
-          createIntegrationRelationship({
+          createDirectRelationship({
             from: domainEntity,
             to: subdomainEntity,
-            _class: 'HAS',
+            _class: RelationshipClass.HAS,
           }),
         );
         await jobState.addRelationships(endpointRelationships);
