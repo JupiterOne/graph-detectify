@@ -32,9 +32,9 @@
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
-    "@jupiterone/integration-sdk-core": "^3.8.0",
-    "@jupiterone/integration-sdk-dev-tools": "3.8.0",
-    "@jupiterone/integration-sdk-testing": "^3.8.0",
+    "@jupiterone/integration-sdk-core": "^4.0.0",
+    "@jupiterone/integration-sdk-dev-tools": "4.0.0",
+    "@jupiterone/integration-sdk-testing": "^4.0.0",
     "@types/har-format": "^1.2.4",
     "@types/jest": "^25.2.1",
     "@types/node": "^13.11.1",
@@ -57,6 +57,6 @@
     "wait-for-expect": "^3.0.2"
   },
   "peerDependencies": {
-    "@jupiterone/integration-sdk-core": "^3.8.0"
+    "@jupiterone/integration-sdk-core": "^4.0.0"
   }
 }
