@@ -4,6 +4,8 @@ import {
   createDirectRelationship,
   Relationship,
   RelationshipClass,
+  IntegrationLogger,
+  IntegrationWarnEventName,
 } from '@jupiterone/integration-sdk-core';
 
 import { createServicesClient } from '../../collector';
@@ -14,6 +16,38 @@ import {
   getServiceEntity,
 } from '../../converter';
 import { Entities, Steps, Relationships } from '../../constants';
+import { ServicesClient } from '../../collector/ServicesClient';
+
+async function getLatestFullReport({
+  token,
+  client,
+  logger,
+}: {
+  token: string;
+  logger: IntegrationLogger;
+  client: ServicesClient;
+}) {
+  try {
+    const report = await client.getLatestFullReport(token);
+    return report;
+  } catch (err) {
+    // TODO: Improve this to handle the specific 1009 error code
+    //
+    // Ex: Caused by: Error: {"error":{"code":1009,"message":"API key cannot access this endpoint, or the team doesn't have permissions to change scan region","more_info":"https://developer.detectify.com/#tag/error-codes"}}
+    if (err.status === 403) {
+      logger.info({ token, err }, 'Unable to fetch latest scan report');
+
+      logger.publishWarnEvent({
+        name: IntegrationWarnEventName.MissingPermission,
+        description: `Fetching full Detectify scan reports is an enterprise feature - API key cannot access this endpoint, or the team doesn't have permissions to change scan region`,
+      });
+
+      return;
+    }
+
+    throw err;
+  }
+}
 
 const step: IntegrationStep = {
   id: Steps.REPORTS,
@@ -25,16 +59,13 @@ const step: IntegrationStep = {
     Relationships.REPORT_IDENTIFIED_FINDING,
     Relationships.ENDPOINT_HAS_FINDING,
   ],
-  // types: [Entities.FINDING._type, Entities.REPORT._type],
   dependsOn: [Steps.SCAN_PROFILES],
   async executionHandler({
     instance,
     jobState,
+    logger,
   }: IntegrationStepExecutionContext) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (!(instance.config as any).getLatestScanFindings) {
-      return;
-    }
+    if (!instance.config.getLatestScanFindings) return;
 
     const accountEntity = getAccountEntity(instance);
     const serviceEntity = getServiceEntity(instance);
@@ -44,10 +75,17 @@ const step: IntegrationStep = {
     await jobState.iterateEntities(
       { _type: Entities.SCAN_PROFILE._type },
       async (profileEntity) => {
-        if (profileEntity.token) {
-          const report = await client.getLatestFullReport(
-            profileEntity.token as string,
-          );
+        const profileEntityToken = profileEntity.token as string;
+
+        if (profileEntityToken) {
+          const report = await getLatestFullReport({
+            client,
+            token: profileEntityToken,
+            logger,
+          });
+
+          if (!report) return;
+
           const reportEntity = convertReport(report);
           await jobState.addEntity(reportEntity);
 
