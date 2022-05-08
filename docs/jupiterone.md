@@ -2,20 +2,20 @@
 
 ## Detectify + JupiterOne Integration Benefits
 
-- Visualize Detectify services, domains, subdomains, scan profiles, scan 
-reports, and findings in the JupiterOne graph.
+- Visualize Detectify services, domains, subdomains, scan profiles, scan
+  reports, and findings in the JupiterOne graph.
 - Monitor Detectify findings within the alerts app.
-- Monitor changes to Detectify vulnerability scan resources using JupiterOne 
-alerts.
+- Monitor changes to Detectify vulnerability scan resources using JupiterOne
+  alerts.
 
 ## How it Works
 
-- JupiterOne periodically fetches vulnerability scan resources from Detectify to 
-update the graph.
-- Write JupiterOne queries to review and monitor updates to the graph, or 
-leverage existing queries.
-- Configure alerts to take action when the JupiterOne graph changes, or leverage 
-existing alerts.
+- JupiterOne periodically fetches vulnerability scan resources from Detectify to
+  update the graph.
+- Write JupiterOne queries to review and monitor updates to the graph, or
+  leverage existing queries.
+- Configure alerts to take action when the JupiterOne graph changes, or leverage
+  existing alerts.
 
 ## Requirements
 
@@ -31,9 +31,8 @@ If you need help with this integration, please contact
 
 ### In Detectify
 
-The integration
-connects directly to [Detectify REST API][1] to obtain application scan assets,
-reports, and findings.
+The integration connects directly to [Detectify REST API][1] to obtain
+application scan assets, reports, and findings.
 
 Configure the integration by providing an API Key from your Detectify account.
 JupiterOne by default ingests findings from the past 30 days. The configuration
@@ -68,15 +67,17 @@ Assessment - IDENTIFIED -> Finding
 1. From the configuration **Gear Icon**, select **Integrations**.
 2. Scroll to the **Detectify** integration tile and click it.
 3. Click the **Add Configuration** button and configure the following settings:
+
 - Enter the **Account Name** by which you'd like to identify this Detectify
-   account in JupiterOne. Ingested entities will have this value stored in
-   `tag.AccountName` when **Tag with Account Name** is checked.
+  account in JupiterOne. Ingested entities will have this value stored in
+  `tag.AccountName` when **Tag with Account Name** is checked.
 - Enter a **Description** that will further assist your team when identifying
-   the integration instance.
+  the integration instance.
 - Select a **Polling Interval** that you feel is sufficient for your monitoring
-   needs. You may leave this as `DISABLED` and manually execute the integration.
-- Enter the **API Key** generated from your Detectify account, configured for 
-read access.
+  needs. You may leave this as `DISABLED` and manually execute the integration.
+- Enter the **API Key** generated from your Detectify account, configured for
+  read access.
+
 4. Click **Create Configuration** once all values are provided.
 
 ## How to Uninstall
@@ -96,7 +97,7 @@ NOTE: ALL OF THE FOLLOWING DOCUMENTATION IS GENERATED USING THE
 "j1-integration document" COMMAND. DO NOT EDIT BY HAND! PLEASE SEE THE DEVELOPER
 DOCUMENTATION FOR USAGE INFORMATION:
 
-https://github.com/JupiterOne/sdk/blob/master/docs/integrations/development.md
+https://github.com/JupiterOne/sdk/blob/main/docs/integrations/development.md
 ********************************************************************************
 -->
 
@@ -118,7 +119,7 @@ The following entities are created:
 
 ### Relationships
 
-The following relationships are created/mapped:
+The following relationships are created:
 
 | Source Entity `_type` | Relationship `_class` | Target Entity `_type`    |
 | --------------------- | --------------------- | ------------------------ |
