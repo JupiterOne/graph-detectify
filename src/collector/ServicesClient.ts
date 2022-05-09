@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { retry } from '@lifeomic/attempt';
 import nodeFetch, { Request } from 'node-fetch';
 

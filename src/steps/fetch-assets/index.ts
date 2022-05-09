@@ -55,7 +55,9 @@ const step: IntegrationStep = {
 
     for (const domainEntity of domainEntities) {
       if (domainEntity.token) {
-        const subdomains = await client.getSubDomains(domainEntity.token);
+        const subdomains = await client.getSubDomains(
+          domainEntity.token as any,
+        );
         const subdomainEntities = subdomains.map(convertSubdomain);
         await jobState.addEntities(subdomainEntities);
 
