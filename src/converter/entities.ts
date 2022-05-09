@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   createIntegrationEntity,
-  getTime,
   convertProperties,
   Entity,
+  parseTimePropertyValue,
 } from '@jupiterone/integration-sdk-core';
 import {
   getHostnameFromUrl,
@@ -13,8 +12,12 @@ import {
 } from './utils';
 import { Entities } from '../constants';
 
+export function buildAccountEntityKey(integrationInstanceId: string) {
+  return `detectify:account:${integrationInstanceId}`;
+}
+
 export const getAccountEntity = (instance: any): Entity => ({
-  _key: `detectify:account:${instance.id}`,
+  _key: buildAccountEntityKey(instance.id),
   _type: Entities.ACCOUNT._type,
   _class: Entities.ACCOUNT._class,
   name: instance.name,
@@ -22,8 +25,12 @@ export const getAccountEntity = (instance: any): Entity => ({
   description: instance.description,
 });
 
+export function buildServiceEntityKey(integrationInstanceId: string) {
+  return `detectify:service:${integrationInstanceId}:mast`;
+}
+
 export const getServiceEntity = (instance: any): Entity => ({
-  _key: `detectify:service:${instance.id}:mast`,
+  _key: buildServiceEntityKey(instance.id),
   _type: Entities.SERVICE._type,
   _class: Entities.SERVICE._class,
   name: 'Detectify DAST',
@@ -45,14 +52,18 @@ export const convertDomain = (
         _type: Entities.WEB_APP_DOMAIN._type,
         _class: Entities.WEB_APP_DOMAIN._class,
         displayName: data.name,
-        createdOn: getTime(data.created),
-        updatedOn: getTime(data.updated),
+        createdOn: parseTimePropertyValue(data.created),
+        updatedOn: parseTimePropertyValue(data.updated),
         status: data.status,
         token: data.token,
         monitored: data.monitored,
       },
     },
   });
+
+export function getSubdomainEntityKey(subdomainName: string) {
+  return `web-app-endpoint:${subdomainName}`;
+}
 
 export const convertSubdomain = (
   data: any,
@@ -61,17 +72,18 @@ export const convertSubdomain = (
     entityData: {
       source: data,
       assign: {
-        _key: `web-app-endpoint:${data.name}`,
+        _key: getSubdomainEntityKey(data.name),
         _type: Entities.WEB_APP_ENDPOINT._type,
         _class: Entities.WEB_APP_ENDPOINT._class,
         name: data.name,
         displayName: data.name,
         address: data.name,
-        createdOn: getTime(data.discovered),
-        updatedOn: getTime(data.updated),
-        lastSeenOn: getTime(data.last_seen),
+        createdOn: parseTimePropertyValue(data.discovered),
+        updatedOn: parseTimePropertyValue(data.updated),
+        lastSeenOn: parseTimePropertyValue(data.last_seen),
         status: data.status,
         token: data.token,
+        addedBy: data.added_by,
       },
     },
   });
@@ -89,7 +101,7 @@ export const convertProfile = (
         name: data.name,
         displayName: data.name,
         endpoint: data.endpoint,
-        createdOn: getTime(data.created),
+        createdOn: parseTimePropertyValue(data.created),
         status: data.status,
         token: data.token,
       },
@@ -111,9 +123,9 @@ export const convertReport = (
         category: 'Vulnerability Scan',
         summary: buildReportSummary(data),
         endpoint: data.endpoint,
-        createdOn: getTime(data.created),
-        startedOn: getTime(data.started),
-        stoppedOn: getTime(data.stopped),
+        createdOn: parseTimePropertyValue(data.created),
+        startedOn: parseTimePropertyValue(data.started),
+        stoppedOn: parseTimePropertyValue(data.stopped),
         cvss: data.cvss,
         score: data.cvss,
         scanProfileName: data.scan_profile_name,
@@ -156,7 +168,7 @@ export const convertFinding = (
         endpoint: data.found_at?.startsWith('http')
           ? getHostnameFromUrl(data.found_at)
           : data.found_at,
-        createdOn: getTime(data.start_timestamp),
+        createdOn: parseTimePropertyValue(data.start_timestamp),
         details: data.details?.map((d) => d.value),
         references: data.definition?.references?.map((r) => r.link),
         cvss2Score,

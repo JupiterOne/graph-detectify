@@ -11,10 +11,38 @@ export interface ServicesClientInput {
 }
 
 interface QueryParam {
-  [param: string]: string | string[];
+  [param: string]: string | string[] | undefined;
 }
 
 const BASE_URL = 'https://api.detectify.com/rest/v2/';
+
+/**
+ * Creates a new object without `undefined` values
+ *
+ * Example input:
+ *
+ * {
+ *   a: 'b',
+ *   c: undefined
+ * }
+ *
+ * Example output:
+ *
+ * {
+ *   a: 'b'
+ * }
+ */
+function withoutUndefined(o: QueryParam) {
+  const newObj = {};
+
+  for (const key in o) {
+    const val = o[key];
+    if (val === undefined) continue;
+    newObj[key] = val;
+  }
+
+  return newObj;
+}
 
 /**
  * Services Api
@@ -32,19 +60,63 @@ export class ServicesClient {
   }
 
   test(): Promise<any[]> {
-    return this.fetch('domains/');
+    return this.fetch('assets/');
   }
 
-  getRootDomains(): Promise<any[]> {
-    return this.fetch('domains/');
+  async iterateRootDomains(
+    iteratee: (domainAsset: any) => Promise<void>,
+  ): Promise<void> {
+    let nextMarker: string | undefined;
+
+    do {
+      const result = await this.fetch<any>('assets/', {
+        marker: nextMarker,
+      });
+
+      for (const asset of result.assets) await iteratee(asset);
+      nextMarker = result.nextMarker;
+    } while (nextMarker);
   }
 
-  getSubDomains(token: string): Promise<any[]> {
-    return this.fetch(`domains/${token}/subdomains/`);
+  async iterateSubdomains(
+    token: string,
+    iteratee: (subdomainAsset: any) => Promise<void>,
+  ): Promise<void> {
+    let nextMarker: string | undefined;
+
+    do {
+      const result = await this.fetch<any>(`assets/${token}/subdomains/`, {
+        marker: nextMarker,
+      });
+
+      for (const asset of result.assets) await iteratee(asset);
+      nextMarker = result.nextMarker;
+    } while (nextMarker);
   }
 
-  getDomainFindings(token: string, params?: QueryParam): Promise<any[]> {
-    return this.fetch(`domains/${token}/findings/`, params);
+  async iterateDomainFindings({
+    token,
+    queryParams,
+    iteratee,
+  }: {
+    token: string;
+    iteratee: (domainFinding: any) => Promise<void>;
+    queryParams?: QueryParam;
+  }): Promise<void> {
+    let nextMarker: string | undefined;
+
+    do {
+      const result = await this.fetch<any>(
+        `domains/${token}/findings/paginated/`,
+        {
+          ...queryParams,
+          marker: nextMarker,
+        },
+      );
+
+      for (const finding of result.findings) await iteratee(finding);
+      nextMarker = result.nextMarker;
+    } while (nextMarker);
   }
 
   getScanProfiles(token: string): Promise<any[]> {
@@ -62,7 +134,10 @@ export class ServicesClient {
   ): Promise<T> {
     return retry(
       async () => {
-        const qs = new URLSearchParams(queryParams).toString();
+        const qs = new URLSearchParams(
+          withoutUndefined(queryParams),
+        ).toString();
+
         const url = `${BASE_URL}${endpoint}${qs ? '?' + qs : ''}`;
         let response;
         try {
