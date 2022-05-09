@@ -8,6 +8,25 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 1.0.0 - 2022-05-09
+
+### Changed
+
+- Upgraded to SDK v8
+
+### Fixed
+
+- Detectify has deprecated and ended life of several endpoints. The integration
+  has been updated to use the new API endpoints.
+
+  - Deprecated: `GET /domains/` Replaced with: `GET /assets/`
+
+  - Deprecated: `GET /domains/{domainToken}/subdomains/` Replaced with:
+    `GET /assets/{assetToken}/subdomains/`
+
+  - Deprecated: `GET /domains/{domainToken}/findings/` Replaced with:
+    `GET /domains/{domainToken}/findings/paginated/`
+
 ## 0.6.0 - 2020-10-29
 
 ### Changed
