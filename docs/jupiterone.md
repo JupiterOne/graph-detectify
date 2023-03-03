@@ -65,7 +65,7 @@ Assessment - IDENTIFIED -> Finding
 ### In JupiterOne
 
 1. From the top navigation of the J1 Search homepage, select **Integrations**.
-2. Scroll to the **Detectify** integration tile and click it.
+2. Scroll to the **Detectify** integration tile and click it. 
 3. Click the **Add Configuration** button and configure the following settings:
 
 - Enter the **Account Name** by which you'd like to identify this Detectify
