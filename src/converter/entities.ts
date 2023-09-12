@@ -40,6 +40,10 @@ export const getServiceEntity = (instance: any): Entity => ({
   function: 'DAST',
 });
 
+export const createDomainKey = (name: string): string => {
+  return `web-app-domain:${name}`;
+};
+
 export const convertDomain = (
   data: any,
 ): ReturnType<typeof createIntegrationEntity> =>
@@ -48,7 +52,7 @@ export const convertDomain = (
       source: data,
       assign: {
         ...convertProperties(data),
-        _key: `web-app-domain:${data.name}`,
+        _key: createDomainKey(data.name),
         _type: Entities.WEB_APP_DOMAIN._type,
         _class: Entities.WEB_APP_DOMAIN._class,
         displayName: data.name,
