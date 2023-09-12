@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 1.0.0 - 2023-12-09
+
+### Changed
+
+- Fix duplicated key issue
+
 ## 1.0.0 - 2022-05-09
 
 ### Changed
