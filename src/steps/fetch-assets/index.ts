@@ -12,6 +12,7 @@ import {
   convertSubdomain,
   buildServiceEntityKey,
   buildAccountEntityKey,
+  createDomainKey,
 } from '../../converter';
 import { Entities, Steps, Relationships } from '../../constants';
 
@@ -22,6 +23,7 @@ async function fetchRootDomains({
   const client = createServicesClient(instance);
 
   await client.iterateRootDomains(async (domainAsset) => {
+    if (!jobState.hasKey(createDomainKey(domainAsset.name))) return;
     await jobState.addEntity(convertDomain(domainAsset));
   });
 }
