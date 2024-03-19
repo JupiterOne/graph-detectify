@@ -194,9 +194,7 @@ export const convertFinding = (
   });
 };
 
-export const convertUser = (
-  user: DetectifyUser,
-): ReturnType<typeof createIntegrationEntity> => {
+export const convertUser = (user: DetectifyUser): Entity => {
   return createIntegrationEntity({
     entityData: {
       source: user,

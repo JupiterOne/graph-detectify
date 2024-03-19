@@ -8,12 +8,6 @@ and this project adheres to
 
 ## [Unreleased]
 
-## 1.1.1 - 2024-03-19
-
-### Changed
-
-- Add users ingestion step
-
 ## 1.0.1 - 2023-12-09
 
 ### Changed
