@@ -6,6 +6,7 @@ export const Steps = {
   FINDINGS: 'fetch-findings',
   SCAN_PROFILES: 'fetch-scan-profiles',
   REPORTS: 'fetch-reports',
+  USERS: 'fetch-users',
 };
 
 export const Entities = {
@@ -43,6 +44,11 @@ export const Entities = {
     resourceName: 'Scan Report',
     _type: 'detectify_scan',
     _class: ['Assessment'],
+  },
+  USER: {
+    resourceName: 'User',
+    _type: 'detectify_user',
+    _class: ['User'],
   },
 };
 
@@ -100,5 +106,11 @@ export const Relationships = {
     sourceType: Entities.SERVICE._type,
     _class: RelationshipClass.SCANS,
     targetType: Entities.WEB_APP_DOMAIN._type,
+  },
+  ACCOUNT_HAS_USER: {
+    _type: 'detectify_account_has_user',
+    sourceType: Entities.ACCOUNT._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.USER._type,
   },
 };

@@ -127,6 +127,10 @@ export class ServicesClient {
     return this.fetch(`fullreports/${token}/latest/`);
   }
 
+  getUsers(): Promise<any> {
+    return this.fetch(`members/`);
+  }
+
   fetch<T = object>(
     endpoint: string,
     queryParams: QueryParam = {},

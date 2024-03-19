@@ -192,3 +192,28 @@ export const convertFinding = (
     },
   });
 };
+
+export const convertUser = (
+  user: any,
+): ReturnType<typeof createIntegrationEntity> => {
+  return createIntegrationEntity({
+    entityData: {
+      source: user,
+      assign: {
+        _key: `detectify-user:${user.user_token}`,
+        _type: Entities.USER._type,
+        _class: Entities.USER._class,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        name: `${user.first_name} ${user.last_name}`,
+        displayName: `${user.first_name} ${user.last_name}`,
+        authentication: user.authentication,
+        role: user.role,
+        userToken: user.user_token,
+        createdOn: parseTimePropertyValue(user.created),
+        lastLoginOn: parseTimePropertyValue(user.last_login),
+      },
+    },
+  });
+};
