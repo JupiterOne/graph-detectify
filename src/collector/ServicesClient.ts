@@ -4,6 +4,7 @@ import nodeFetch, { Request } from 'node-fetch';
 import { retryableRequestError, fatalRequestError } from './error';
 import { URLSearchParams } from 'url';
 import { IntegrationProviderAPIError } from '@jupiterone/integration-sdk-core';
+import { DetectifyUser } from '../types';
 
 export interface ServicesClientInput {
   getLatestScanFindings?: boolean;
@@ -127,7 +128,7 @@ export class ServicesClient {
     return this.fetch(`fullreports/${token}/latest/`);
   }
 
-  getUsers(): Promise<any> {
+  getUsers(): Promise<DetectifyUser[]> {
     return this.fetch(`members/`);
   }
 

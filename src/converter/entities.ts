@@ -11,6 +11,7 @@ import {
   buildReportSummary,
 } from './utils';
 import { Entities } from '../constants';
+import { DetectifyUser } from '../types';
 
 export function buildAccountEntityKey(integrationInstanceId: string) {
   return `detectify:account:${integrationInstanceId}`;
@@ -194,7 +195,7 @@ export const convertFinding = (
 };
 
 export const convertUser = (
-  user: any,
+  user: DetectifyUser,
 ): ReturnType<typeof createIntegrationEntity> => {
   return createIntegrationEntity({
     entityData: {

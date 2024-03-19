@@ -17,21 +17,21 @@ async function fetchUsers({
   const client = createServicesClient(instance);
   const users = await client.getUsers();
 
+  const accountEntity = await jobState.findEntity(
+    buildAccountEntityKey(instance.id),
+  );
+
+  if (!accountEntity) {
+    throw new IntegrationError({
+      message: 'Could not find account entity in job state',
+      code: 'MISSING_ENTITY',
+      fatal: true,
+    });
+  }
+
   for (const user of users) {
     const userEntity = convertUser(user);
     await jobState.addEntity(userEntity);
-
-    const accountEntity = await jobState.findEntity(
-      buildAccountEntityKey(instance.id),
-    );
-
-    if (!accountEntity) {
-      throw new IntegrationError({
-        message: 'Could not find account entity in job state',
-        code: 'MISSING_ENTITY',
-        fatal: true,
-      });
-    }
 
     await jobState.addRelationship(
       createDirectRelationship({
