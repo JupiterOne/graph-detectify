@@ -49,9 +49,7 @@ const step: IntegrationStep = {
   entities: [Entities.USER],
   relationships: [Relationships.ACCOUNT_HAS_USER],
   dependsOn: [Steps.ACCOUNT],
-  async executionHandler(context: IntegrationStepExecutionContext) {
-    await fetchUsers(context);
-  },
+  executionHandler: fetchUsers,
 };
 
 export default step;

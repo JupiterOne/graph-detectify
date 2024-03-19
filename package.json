@@ -36,9 +36,9 @@
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
-    "@jupiterone/integration-sdk-core": "^8.13.2",
-    "@jupiterone/integration-sdk-dev-tools": "^8.13.2",
-    "@jupiterone/integration-sdk-testing": "^8.13.2",
+    "@jupiterone/integration-sdk-core": "^12.2.5",
+    "@jupiterone/integration-sdk-dev-tools": "^12.2.5",
+    "@jupiterone/integration-sdk-testing": "^12.2.5",
     "@types/node-fetch": "^2.5.7",
     "lint-staged": "^10.1.3"
   },
