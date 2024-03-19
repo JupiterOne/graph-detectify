@@ -125,9 +125,9 @@ The following relationships are created:
 | Source Entity `_type` | Relationship `_class` | Target Entity `_type`    |
 | --------------------- | --------------------- | ------------------------ |
 | `detectify_account`   | **HAS**               | `detectify_scan`         |
-| `detectify_account`   | **PROVIDES**          | `detectify_service`      |
 | `detectify_account`   | **HAS**               | `detectify_user`         |
 | `detectify_account`   | **HAS**               | `web_app_domain`         |
+| `detectify_account`   | **PROVIDES**          | `detectify_service`      |
 | `detectify_scan`      | **IDENTIFIED**        | `detectify_finding`      |
 | `detectify_service`   | **PERFORMED**         | `detectify_scan`         |
 | `detectify_service`   | **SCANS**             | `web_app_domain`         |

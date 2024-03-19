@@ -202,6 +202,7 @@ export const convertUser = (user: DetectifyUser): Entity => {
         _key: `detectify-user:${user.user_token}`,
         _type: Entities.USER._type,
         _class: Entities.USER._class,
+        username: user.email,
         email: user.email,
         firstName: user.first_name,
         lastName: user.last_name,
