@@ -11,6 +11,7 @@ import {
   buildReportSummary,
 } from './utils';
 import { Entities } from '../constants';
+import { DetectifyUser } from '../types';
 
 export function buildAccountEntityKey(integrationInstanceId: string) {
   return `detectify:account:${integrationInstanceId}`;
@@ -188,6 +189,30 @@ export const convertFinding = (
           'unknown',
         webLink: data.url,
         open: true,
+      },
+    },
+  });
+};
+
+export const convertUser = (user: DetectifyUser): Entity => {
+  return createIntegrationEntity({
+    entityData: {
+      source: user,
+      assign: {
+        _key: `detectify-user:${user.user_token}`,
+        _type: Entities.USER._type,
+        _class: Entities.USER._class,
+        username: user.email,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        name: `${user.first_name} ${user.last_name}`,
+        displayName: `${user.first_name} ${user.last_name}`,
+        authentication: user.authentication,
+        role: user.role,
+        userToken: user.user_token,
+        createdOn: parseTimePropertyValue(user.created),
+        lastLoginOn: parseTimePropertyValue(user.last_login),
       },
     },
   });

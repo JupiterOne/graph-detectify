@@ -9,6 +9,7 @@ import fetchAssets from './steps/fetch-assets';
 import fetchFindings from './steps/fetch-findings';
 import fetchReports from './steps/fetch-reports';
 import fetchScanProfiles from './steps/fetch-scan-profiles';
+import fetchUsers from './steps/fetch-users';
 
 export const invocationConfig: IntegrationInvocationConfig<IntegrationConfig> =
   {
@@ -20,5 +21,6 @@ export const invocationConfig: IntegrationInvocationConfig<IntegrationConfig> =
       fetchFindings,
       fetchReports,
       fetchScanProfiles,
+      fetchUsers,
     ],
   };

@@ -116,6 +116,7 @@ The following entities are created:
 | Scan Profile      | `detectify_scan_profile` | `Configuration`       |
 | Scan Report       | `detectify_scan`         | `Assessment`          |
 | Service           | `detectify_service`      | `Service`             |
+| User              | `detectify_user`         | `User`                |
 
 ### Relationships
 
@@ -124,6 +125,7 @@ The following relationships are created:
 | Source Entity `_type` | Relationship `_class` | Target Entity `_type`    |
 | --------------------- | --------------------- | ------------------------ |
 | `detectify_account`   | **HAS**               | `detectify_scan`         |
+| `detectify_account`   | **HAS**               | `detectify_user`         |
 | `detectify_account`   | **HAS**               | `web_app_domain`         |
 | `detectify_account`   | **PROVIDES**          | `detectify_service`      |
 | `detectify_scan`      | **IDENTIFIED**        | `detectify_finding`      |
